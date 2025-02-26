@@ -61,7 +61,7 @@ class Gameboard {
     }
     // only allow coordinates if previous loop is true (i.e. no ship already exists in the coordinates)
     ship.shipCoordinates.push(...proposedCoordinates);
-    this.board.push(...ship.shipCoordinates);
+    this.board.push(...proposedCoordinates);
     this.listOfShips.push(ship);
   }
 
@@ -75,21 +75,33 @@ class Gameboard {
       );
       if (hit) {
         ship.hit();
-        return;
+        return true;
       }
     }
     this.missedAttacks.push([x, y]);
+    return false;
   }
 
   allSunk() {
+    this.allShipsSunk = [];
+
     for (let i = 0; i < this.listOfShips.length; i++) {
       let ship = this.listOfShips[i];
       this.allShipsSunk.push(ship.isSunk());
     }
 
     let allSunk = this.allShipsSunk.every((value) => value === true);
+    // returns true if all ships have been sunk
     return allSunk;
   }
 }
 
-export { Ship, Gameboard };
+class Player {
+  constructor(name, id) {
+    this.name = name;
+    this.id = id;
+    this.board = new Gameboard();
+  }
+}
+
+export { Ship, Gameboard, Player };

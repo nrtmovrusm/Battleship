@@ -1,4 +1,4 @@
-import { Ship, Gameboard } from "./shipsGameboard";
+import { Ship, Gameboard, Player } from "./shipsGameboard";
 
 describe("class Ship", () => {
   let ship;
@@ -119,5 +119,12 @@ describe("Gameboard", () => {
     ship.sunkStatus = true;
     ship2.sunkStatus = true;
     expect(gameboard.allSunk()).toBe(true);
+  });
+
+  describe("Player", () => {
+    test("create new player", () => {
+      let player1 = new Player("Player 1");
+      expect(player1.name).toBe("Player 1");
+    });
   });
 });
