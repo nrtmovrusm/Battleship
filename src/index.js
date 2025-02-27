@@ -60,7 +60,7 @@ function selectOpponentSquare(player) {
   if (player.id === 2) {
     instructions.textContent = `${player.name}'s turn. Computer is selecting a square to attack...`;
     // Delay the computer's move for effect
-    setTimeout(computerTurn, 1000);
+    computerTurn();
   } else {
     instructions.textContent = `${player.name}'s turn. Select square on opponent's grid to attack.`;
     let opponentBoard = document.querySelector(`.board-display-${opponent.id}`);
@@ -73,39 +73,44 @@ function selectOpponentSquare(player) {
 }
 
 function computerTurn() {
-  let opponentBoard = document.querySelector(`.board-display-1`);
-  const opponentSquares = Array.from(opponentBoard.querySelectorAll(".active"));
-  const randomSquare =
-    opponentSquares[Math.floor(Math.random() * opponentSquares.length)];
+  setTimeout(() => {
+    let opponentBoard = document.querySelector(`.board-display-1`);
+    const opponentSquares = Array.from(
+      opponentBoard.querySelectorAll(".active"),
+    );
+    const randomSquare =
+      opponentSquares[Math.floor(Math.random() * opponentSquares.length)];
 
-  let selectedSquareID = randomSquare.id;
-  let coordinatesXY = selectedSquareID.split("x")[1].split("y");
-  let coordinates = [parseInt(coordinatesXY[0]), parseInt(coordinatesXY[1])];
+    let selectedSquareID = randomSquare.id;
+    let coordinatesXY = selectedSquareID.split("x")[1].split("y");
+    let coordinates = [parseInt(coordinatesXY[0]), parseInt(coordinatesXY[1])];
 
-  if (player1.board.receiveAttack(coordinates)) {
-    randomSquare.classList.add("hit");
-    instructions.textContent = `Ship hit! Computer continues its turn.`;
+    if (player1.board.receiveAttack(coordinates)) {
+      randomSquare.classList.add("hit");
+      instructions.textContent = `Ship hit! Computer continues its turn.`;
 
-    // end game if all player1 sinks have sunk
-    if (player1.board.allSunk()) {
-      instructions.textContent = `${player1.name} has lost! Computer wins!`;
-      endGame();
-      return;
+      // end game if all player1 sinks have sunk
+      if (player1.board.allSunk()) {
+        instructions.textContent = `${player1.name} has lost! Computer wins!`;
+        endGame();
+        return;
+      }
+
+      computerTurn();
+    } else {
+      randomSquare.classList.add("miss");
+      instructions.textContent = `Missed! Player 1's turn.`;
+      setTimeout(() => {
+        changePlayerTurn(player2); // After a miss, the turn changes back to Player 1
+      }, 1000);
     }
-  } else {
-    randomSquare.classList.add("miss");
-    instructions.textContent = `Missed! Player 1's turn.`;
-    changePlayerTurn(player2); // After a miss, the turn changes back to Player 1
-  }
 
-  // Disable the square and remove event listeners
-  randomSquare.disabled = true;
-  randomSquare.classList.add("disabled");
-  randomSquare.classList.remove("active");
-  randomSquare.removeEventListener("click", squareClicks); // Remove click listener
-
-  // Continue the game
-  changePlayerTurn(player2); // After the computer's turn, change the turn to Player 1
+    // Disable the square and remove event listeners
+    randomSquare.disabled = true;
+    randomSquare.classList.add("disabled");
+    randomSquare.classList.remove("active");
+    randomSquare.removeEventListener("click", squareClicks); // Remove click listener
+  }, 2000);
 }
 
 function squareClicks(e) {
