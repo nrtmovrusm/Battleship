@@ -63,6 +63,7 @@ class Gameboard {
     ship.shipCoordinates.push(...proposedCoordinates);
     this.board.push(...proposedCoordinates);
     this.listOfShips.push(ship);
+    return true;
   }
 
   receiveAttack([x, y]) {
@@ -100,6 +101,10 @@ class Player {
   constructor(name, id) {
     this.name = name;
     this.id = id;
+    this.board = new Gameboard();
+  }
+
+  reset() {
     this.board = new Gameboard();
   }
 }

@@ -12,16 +12,27 @@ function initializePlayers() {
 function initializeShips(player) {
   const shipLengths = [1, 1, 1, 1, 2, 2, 2, 3, 3, 4];
   let fleetOfShips = shipLengths.map((length) => new Ship(length));
-  player.board.placeShip(fleetOfShips[0], [1, 1]);
-  player.board.placeShip(fleetOfShips[1], [10, 3]);
-  player.board.placeShip(fleetOfShips[2], [9, 8]);
-  player.board.placeShip(fleetOfShips[3], [4, 10]);
-  player.board.placeShip(fleetOfShips[4], [1, 3]);
-  player.board.placeShip(fleetOfShips[5], [6, 8]);
-  player.board.placeShip(fleetOfShips[6], [6, 5]);
-  player.board.placeShip(fleetOfShips[7], [2, 5]);
-  player.board.placeShip(fleetOfShips[8], [2, 7]);
-  player.board.placeShip(fleetOfShips[9], [4, 1]);
+
+  fleetOfShips.forEach((ship) => {
+    placeShipRandomly(player, ship);
+  });
+}
+
+function placeShipRandomly(player, ship) {
+  let isPlaced = false;
+
+  while (!isPlaced) {
+    let x = Math.floor(Math.random() * 10) + 1; // +1 to eliminate picking 0
+    let y = Math.floor(Math.random() * 10) + 1;
+
+    let orientation = Math.random() < 0.5 ? "horizontal" : "vertical";
+    ship.orientation = orientation;
+
+    // if able to place on board then returns true
+    if (player.board.placeShip(ship, [x, y])) {
+      isPlaced = true;
+    }
+  }
 }
 
 function displayNewGameboard(playerNo) {
@@ -182,3 +193,22 @@ function startNewGame() {
 
 let { player1, player2 } = initializePlayers();
 startNewGame();
+
+const randomizeBtn = document.querySelector(".random");
+randomizeBtn.addEventListener("click", () => {
+  clearBoard();
+  player1.reset();
+  player2.reset();
+  startNewGame();
+});
+
+function clearBoard() {
+  const boardDisplay = document.querySelector(`.board-display-1`);
+  while (boardDisplay.firstChild) {
+    boardDisplay.removeChild(boardDisplay.firstChild);
+  }
+  const boardDisplay2 = document.querySelector(".board-display-2");
+  while (boardDisplay2.firstChild) {
+    boardDisplay2.removeChild(boardDisplay2.firstChild);
+  }
+}

@@ -78,7 +78,11 @@ body {
   background-color: lightblue;
 }
 
-.hit {
+.board-display-2 .ship {
+  background-color: white;
+}
+
+.ship.hit {
   background-color: red;
   position: relative;
 }
